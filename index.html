@@ -1,0 +1,64 @@
+<!DOCTYPE html><html lang="pt-BR"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Tiicoo Barbeiro</title><meta name="theme-color" content="#000"/>
+<link rel="manifest" href="manifest.json"/><link rel="stylesheet" href="styles.css"/>
+<script defer src="sw-register.js"></script></head><body>
+<div class="wrapper">
+<header class="header">
+  <div class="brand"><img src="assets/logo.svg" alt="logo"/><div><strong>Tiicoo Barbeiro</strong><br/><span class="small">Qualidade e estilo em cada corte ✂️</span></div></div>
+  <a class="btn btn-outline" href="#agendar">Agendar</a>
+</header>
+<section class="hero"><h1>Bem-vindo!</h1><p class="note">Funcionamento: 10h às 20h — Almoço 13h às 15h — Domingo fechado</p></section>
+<h2 class="section-title">Catálogo de serviços</h2>
+<div id="catalogo" class="grid"></div>
+<h2 id="agendar" class="section-title">Agendar pelo WhatsApp</h2>
+<div class="card">
+  <div class="grid">
+    <div><label>Serviço</label><select id="selectServico"></select></div>
+    <div><label>Dia</label><input type="date" id="data"/></div>
+    <div><label>Horário (35min por atendimento)</label><select id="hora"></select></div>
+    <div><label>Seu nome</label><input type="text" id="nome" placeholder="Seu nome"/></div>
+  </div><br/>
+  <button class="btn" onclick="enviarWhats()">Enviar pedido no WhatsApp</button>
+  <p class="small note">O pedido será enviado para o nosso WhatsApp e confirmaremos em seguida.</p>
+</div>
+<h2 class="section-title">Endereço & Contato</h2>
+<div class="card">
+  <p><strong>WhatsApp:</strong> (21) 98838-8260</p>
+  <p><strong>Instagram:</strong> @tiicoo_barbeiro</p>
+  <p class="small">Siga-nos no Instagram para ver os trabalhos mais recentes!</p>
+</div>
+<footer class="footer">© 2025 Tiicoo Barbeiro — Todos os direitos reservados.</footer>
+</div>
+<div class="fixed-actions">
+  <a class="btn" href="https://wa.me/5521988388260" target="_blank">WhatsApp</a>
+  <a class="btn btn-outline" href="https://instagram.com/tiicoo_barbeiro" target="_blank">Instagram</a>
+</div>
+<script>
+const servicos = [{"cat": "Cortes", "name": "Corte simples", "price": 20}, {"cat": "Cortes", "name": "Corte desfaçado", "price": 30}, {"cat": "Cortes", "name": "Máquina e tesoura", "price": 35}, {"cat": "Cortes", "name": "Tesoura", "price": 40}, {"cat": "Cortes", "name": "Navalhado", "price": 35}, {"cat": "Barba", "name": "Barba simples", "price": 8}, {"cat": "Barba", "name": "Barba modelada", "price": 10}, {"cat": "Barba", "name": "Pigmentação na barba", "price": 15}, {"cat": "Coloração", "name": "Reflexo", "price": 60}, {"cat": "Coloração", "name": "Nevou", "price": 80}, {"cat": "Coloração", "name": "Tinta preta", "price": 10}, {"cat": "Coloração", "name": "Tinta demais cores", "price": 80}, {"cat": "Sobrancelha", "name": "Sobrancelha", "price": 10}];
+function formatBRL(v){return v.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});}
+function montarCatalogo(){
+  const el=document.getElementById('catalogo'); el.innerHTML='';
+  servicos.forEach(s=>{const d=document.createElement('div'); d.className='card'; d.innerHTML=`<h3>${s.name}</h3><div class='price'>${formatBRL(s.price)}</div>`; el.appendChild(d);});
+}
+function montarSelectServico(){
+  const sel=document.getElementById('selectServico');
+  servicos.forEach((s,i)=>{const o=document.createElement('option'); o.value=i; o.textContent=`${s.name} — ${formatBRL(s.price)}`; sel.appendChild(o);});
+}
+function montarHoras(){
+  const hsel=document.getElementById('hora'); hsel.innerHTML='';
+  const add=(h,m)=>{const o=document.createElement('option'); o.value=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`; o.textContent=o.value; hsel.appendChild(o);};
+  for(let h=10;h<20;h++){ if(h>=13&&h<15) continue; for(let m=0;m<60;m+=35){ if(h===19&&m>0) break; add(h,m); } }
+}
+function enviarWhats(){
+  const s=servicos[document.getElementById('selectServico').value];
+  const data=document.getElementById('data').value;
+  const hora=document.getElementById('hora').value;
+  const nome=document.getElementById('nome').value||'Cliente';
+  const msg=`Olá, sou ${nome}. Quero agendar: ${s.name} (R$ ${s.price}) para ${data} às ${hora}.`;
+  const url='https://wa.me/5521988388260?text='+encodeURIComponent(msg);
+  window.open(url,'_blank');
+}
+montarCatalogo(); montarSelectServico(); montarHoras();
+</script>
+</body></html>
