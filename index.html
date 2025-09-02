@@ -1,78 +1,58 @@
-<!DOCTYPE html><html lang="pt-BR"><head>
-<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Tiicoo Barbeiro</title><meta name="theme-color" content="#000"/>
-<link rel="manifest" href="manifest.json"/><link rel="stylesheet" href="styles.css"/>
-<script defer src="sw-register.js"></script></head><body>
-<div class="wrapper">
-<header class="header">
-  <div class="brand"><img src="assets/logo.svg" alt="logo"/><div><strong>Tiicoo Barbeiro</strong><br/><span class="small">Qualidade e estilo em cada corte ✂️</span></div></div>
-  <a class="btn btn-outline" href="#agendar">Agendar</a>
-</header>
-<section class="hero"><h1>Bem-vindo!</h1><p class="note">Funcionamento: 10h às 20h — Almoço 13h às 15h — Domingo fechado</p></section>
-<h2 class="section-title">Catálogo de serviços</h2>
-<div id="catalogo" class="grid"></div>  <!-- Seções do app (catálogo, agendamento, etc.) -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tiicoo Barbeiro</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>Tiicoo Barbeiro</h1>
+    <p>Escolha seus serviços e pague com PIX</p>
+  </header>
 
-  <section id="pix" style="text-align: center; margin: 40px 0;">
-    <h2>💳 Pagamento via Pix</h2>
-    <p>Use a chave Pix abaixo para realizar o pagamento:</p>
-    <div style="font-size: 18px; font-weight: bold; margin: 10px 0;">
-      44a98070-dd9d-4bca-8371-a93401fee702
-    </div>
-    <p><strong>Banco:</strong> Santander</p>
-    <p style="color: gray; font-size: 14px;">Copie e cole no seu app do banco para pagar.</p>
-  </section>
+  <main>
+    <section id="servicos">
+      <h2>Serviços</h2>
+      <form id="form-servicos">
+        <label><input type="checkbox" name="servico" value="20" data-nome="Corte simples"> Corte simples - R$20</label><br>
+        <label><input type="checkbox" name="servico" value="30" data-nome="Corte desfaçado"> Corte desfaçado - R$30</label><br>
+        <label><input type="checkbox" name="servico" value="35" data-nome="Máquina e tesoura"> Máquina e tesoura - R$35</label><br>
+        <label><input type="checkbox" name="servico" value="40" data-nome="Tesoura"> Tesoura - R$40</label><br>
+        <label><input type="checkbox" name="servico" value="35" data-nome="Navalhado"> Navalhado - R$35</label><br>
+        <label><input type="checkbox" name="servico" value="10" data-nome="Sobrancelha"> Sobrancelha - R$10</label><br>
+        <label><input type="checkbox" name="servico" value="60" data-nome="Reflexo"> Reflexo - R$60</label><br>
+        <label><input type="checkbox" name="servico" value="80" data-nome="Nevou"> Nevou - R$80</label><br>
+        <label><input type="checkbox" name="servico" value="10" data-nome="Tinta preta"> Tinta preta - R$10</label><br>
+        <label><input type="checkbox" name="servico" value="80" data-nome="Tinta demais cores"> Tinta demais cores - R$80</label><br>
+        <label><input type="checkbox" name="servico" value="8" data-nome="Barba simples"> Barba simples - R$8</label><br>
+        <label><input type="checkbox" name="servico" value="10" data-nome="Barba modelada"> Barba modelada - R$10</label><br>
+        <label><input type="checkbox" name="servico" value="15" data-nome="Pigmentação na barba"> Pigmentação na barba - R$15</label><br>
+      </form>
+      <p>Total: R$ <span id="total">0</span></p>
+    </section>
 
+    <section id="pagamento">
+      <h2>Pagamento PIX</h2>
+      <p>Escaneie o QR Code ou copie o código abaixo:</p>
+      <img src="pix.png" alt="QR Code Pix" width="200"/>
+      <textarea id="pix-code" readonly>00020126580014BR.GOV.BCB.PIX013644a98070-dd9d-4bca-8371-a93401fee70252040000530398654041.005802BR5920Tiicoo Barbeiro6009SAO PAULO62070503***6304ABCD</textarea>
+      <button onclick="copiarPix()">Copiar Código PIX</button>
+    </section>
+
+    <section id="agendamento">
+      <h2>Agendamento</h2>
+      <p>Confirme seu pagamento antes de agendar.</p>
+      <input type="datetime-local" id="data-horario"/>
+      <button id="confirmar-btn" disabled>Confirmar Agendamento</button>
+    </section>
+  </main>
+
+  <footer>
+    <a id="whatsapp-link" href="https://wa.me/5521988388260" target="_blank">Enviar comprovante no WhatsApp</a>
+  </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>
-
-<h2 id="agendar" class="section-title">Agendar pelo WhatsApp</h2>
-<div class="card">
-  <div class="grid">
-    <div><label>Serviço</label><select id="selectServico"></select></div>
-    <div><label>Dia</label><input type="date" id="data"/></div>
-    <div><label>Horário (35min por atendimento)</label><select id="hora"></select></div>
-    <div><label>Seu nome</label><input type="text" id="nome" placeholder="Seu nome"/></div>
-  </div><br/>
-  <button class="btn" onclick="enviarWhats()">Enviar pedido no WhatsApp</button>
-  <p class="small note">O pedido será enviado para o nosso WhatsApp e confirmaremos em seguida.</p>
-</div>
-<h2 class="section-title">Endereço & Contato</h2>
-<div class="card">
-  <p><strong>WhatsApp:</strong> (21) 98838-8260</p>
-  <p><strong>Instagram:</strong> @tiicoo_barbeiro</p>
-  <p class="small">Siga-nos no Instagram para ver os trabalhos mais recentes!</p>
-</div>
-<footer class="footer">© 2025 Tiicoo Barbeiro — Todos os direitos reservados.</footer>
-</div>
-<div class="fixed-actions">
-  <a class="btn" href="https://wa.me/5521988388260" target="_blank">WhatsApp</a>
-  <a class="btn btn-outline" href="https://instagram.com/tiicoo_barbeiro" target="_blank">Instagram</a>
-</div>
-<script>
-const servicos = [{"cat": "Cortes", "name": "Corte simples", "price": 20}, {"cat": "Cortes", "name": "Corte desfaçado", "price": 30}, {"cat": "Cortes", "name": "Máquina e tesoura", "price": 35}, {"cat": "Cortes", "name": "Tesoura", "price": 40}, {"cat": "Cortes", "name": "Navalhado", "price": 35}, {"cat": "Barba", "name": "Barba simples", "price": 8}, {"cat": "Barba", "name": "Barba modelada", "price": 10}, {"cat": "Barba", "name": "Pigmentação na barba", "price": 15}, {"cat": "Coloração", "name": "Reflexo", "price": 60}, {"cat": "Coloração", "name": "Nevou", "price": 80}, {"cat": "Coloração", "name": "Tinta preta", "price": 10}, {"cat": "Coloração", "name": "Tinta demais cores", "price": 80}, {"cat": "Sobrancelha", "name": "Sobrancelha", "price": 10}];
-function formatBRL(v){return v.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});}
-function montarCatalogo(){
-  const el=document.getElementById('catalogo'); el.innerHTML='';
-  servicos.forEach(s=>{const d=document.createElement('div'); d.className='card'; d.innerHTML=`<h3>${s.name}</h3><div class='price'>${formatBRL(s.price)}</div>`; el.appendChild(d);});
-}
-function montarSelectServico(){
-  const sel=document.getElementById('selectServico');
-  servicos.forEach((s,i)=>{const o=document.createElement('option'); o.value=i; o.textContent=`${s.name} — ${formatBRL(s.price)}`; sel.appendChild(o);});
-}
-function montarHoras(){
-  const hsel=document.getElementById('hora'); hsel.innerHTML='';
-  const add=(h,m)=>{const o=document.createElement('option'); o.value=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`; o.textContent=o.value; hsel.appendChild(o);};
-  for(let h=10;h<20;h++){ if(h>=13&&h<15) continue; for(let m=0;m<60;m+=35){ if(h===19&&m>0) break; add(h,m); } }
-}
-function enviarWhats(){
-  const s=servicos[document.getElementById('selectServico').value];
-  const data=document.getElementById('data').value;
-  const hora=document.getElementById('hora').value;
-  const nome=document.getElementById('nome').value||'Cliente';
-  const msg=`Olá, sou ${nome}. Quero agendar: ${s.name} (R$ ${s.price}) para ${data} às ${hora}.`;
-  const url='https://wa.me/5521988388260?text='+encodeURIComponent(msg);
-  window.open(url,'_blank');
-}
-montarCatalogo(); montarSelectServico(); montarHoras();
-</script>
-</body></html>
