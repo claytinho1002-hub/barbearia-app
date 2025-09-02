@@ -1,15 +1,13 @@
 {
   "name": "Tiicoo Barbeiro",
-  "short_name": "Barbeiro",
+  "short_name": "Barbearia",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#d4af37",
-  "icons": [
-    {
-      "src": "icon.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    }
-  ]
+  "icons": [{
+    "src": "icon.png",
+    "sizes": "192x192",
+    "type": "image/png"
+  }]
 }

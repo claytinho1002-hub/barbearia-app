@@ -1,70 +1,79 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tiicoo Barbeiro</title>
-  <link rel="manifest" href="manifest.json">
+  <link rel="manifest" href="manifest.json" />
   <style>
     body { font-family: Arial, sans-serif; background: #000; color: #d4af37; text-align: center; padding: 20px; }
-    h1 { color: #d4af37; }
-    label { display: block; margin: 10px; font-size: 18px; }
-    button { margin-top: 20px; padding: 10px 20px; background: #d4af37; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; }
-    textarea { width: 90%; margin-top: 10px; }
+    .card { background: #111; padding: 20px; margin: 15px 0; border-radius: 12px; }
+    button { background: #d4af37; color: #000; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; }
+    button:disabled { background: gray; cursor: not-allowed; }
+    #total { font-size: 20px; margin: 10px 0; }
   </style>
 </head>
 <body>
-  <h1>Tiicoo Barbeiro</h1>
-  <h2>Escolha seus serviços</h2>
+  <h1>💈 Tiicoo Barbeiro</h1>
+  <p>Escolha seus serviços:</p>
 
-  <label><input type="checkbox" class="servico" value="20"> Corte simples - R$20</label>
-  <label><input type="checkbox" class="servico" value="30"> Corte desfaçado - R$30</label>
-  <label><input type="checkbox" class="servico" value="35"> Máquina e tesoura - R$35</label>
-  <label><input type="checkbox" class="servico" value="40"> Tesoura - R$40</label>
-  <label><input type="checkbox" class="servico" value="35"> Navalhado - R$35</label>
-  <label><input type="checkbox" class="servico" value="10"> Sobrancelha - R$10</label>
-  <label><input type="checkbox" class="servico" value="60"> Reflexo - R$60</label>
-  <label><input type="checkbox" class="servico" value="80"> Nevou - R$80</label>
-  <label><input type="checkbox" class="servico" value="10"> Tinta preta - R$10</label>
-  <label><input type="checkbox" class="servico" value="80"> Tinta demais cores - R$80</label>
-  <label><input type="checkbox" class="servico" value="8"> Barba simples - R$8</label>
-  <label><input type="checkbox" class="servico" value="10"> Barba modelada - R$10</label>
-  <label><input type="checkbox" class="servico" value="15"> Pigmentação barba - R$15</label>
+  <div class="card">
+    <label><input type="checkbox" value="20"> Corte simples - R$20</label><br>
+    <label><input type="checkbox" value="30"> Corte desfaçado - R$30</label><br>
+    <label><input type="checkbox" value="35"> Máquina e tesoura - R$35</label><br>
+    <label><input type="checkbox" value="40"> Tesoura - R$40</label><br>
+    <label><input type="checkbox" value="35"> Navalhado - R$35</label><br>
+    <label><input type="checkbox" value="10"> Sobrancelha - R$10</label><br>
+    <label><input type="checkbox" value="60"> Reflexo - R$60</label><br>
+    <label><input type="checkbox" value="80"> Nevou - R$80</label><br>
+    <label><input type="checkbox" value="10"> Tinta preta - R$10</label><br>
+    <label><input type="checkbox" value="80"> Tinta demais cores - R$80</label><br>
+    <label><input type="checkbox" value="8"> Barba simples - R$8</label><br>
+    <label><input type="checkbox" value="10"> Barba modelada - R$10</label><br>
+    <label><input type="checkbox" value="15"> Pigmentação na barba - R$15</label><br>
+  </div>
 
-  <p><strong>Total: R$ <span id="total">0.00</span></strong></p>
+  <p id="total">Total: R$0</p>
 
-  <button onclick="gerarPix()">Gerar Pix</button>
-  <p id="pixCode"></p>
+  <div class="card">
+    <p><b>Pagamento via Pix:</b></p>
+    <p>Chave Copia e Cola:</p>
+    <textarea id="pix" rows="2" cols="40" readonly>00020126330014BR.GOV.BCB.PIX011844a98070-dd9d-4bca-8371-a93401fee7025204000053039865406100.005802BR5924Clayton Firmino Barboza6009Sao Paulo62070503***6304ABCD</textarea>
+    <br><button onclick="copiarPix()">Copiar Pix</button>
+    <p><b>Nome:</b> Clayton Firmino Barboza</p>
+    <canvas id="qrcode"></canvas>
+  </div>
 
+  <button id="agendar" disabled>Agendar horário</button>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
   <script>
-    const checkboxes = document.querySelectorAll(".servico");
-    const totalSpan = document.getElementById("total");
+    const checkboxes = document.querySelectorAll("input[type=checkbox]");
+    const totalEl = document.getElementById("total");
+    const agendarBtn = document.getElementById("agendar");
+    const pixCode = document.getElementById("pix").value;
 
-    checkboxes.forEach(c => {
-      c.addEventListener("change", () => {
-        let total = 0;
-        checkboxes.forEach(cb => {
-          if (cb.checked) total += parseFloat(cb.value);
-        });
-        totalSpan.textContent = total.toFixed(2);
-      });
-    });
+    checkboxes.forEach(cb => cb.addEventListener("change", atualizarTotal));
 
-    function gerarPix() {
-      const total = document.getElementById("total").textContent;
-      if (total == "0.00") {
-        alert("Selecione algum serviço antes de gerar o Pix!");
-        return;
-      }
-
-      const pix = "00020126360014BR.GOV.BCB.PIX011144a98070-dd9d-4bca-8371-a93401fee702520400005303986540" 
-        + total + "5802BR5920Tiicoo Barbeiro6009SAO PAULO62070503***6304";
-
-      document.getElementById("pixCode").innerHTML = `
-        <strong>Pix copia e cola:</strong><br>
-        <textarea rows="4" cols="50">${pix}</textarea>
-      `;
+    function atualizarTotal() {
+      let total = 0;
+      checkboxes.forEach(cb => { if (cb.checked) total += parseFloat(cb.value); });
+      totalEl.innerText = "Total: R$" + total.toFixed(2);
+      agendarBtn.disabled = total === 0;
     }
+
+    function copiarPix() {
+      navigator.clipboard.writeText(pixCode).then(() => {
+        alert("Pix copiado!");
+      });
+    }
+
+    // Gerar QR Code Pix
+    new QRious({
+      element: document.getElementById("qrcode"),
+      value: pixCode,
+      size: 200
+    });
   </script>
 </body>
 </html>
