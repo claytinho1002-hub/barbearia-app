@@ -1,22 +1,43 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tiicoo Barbeiro</title>
-  <link rel="manifest" href="manifest.json" />
+  <link rel="manifest" href="manifest.json">
   <style>
-    body { font-family: Arial, sans-serif; background: #000; color: #d4af37; text-align: center; padding: 20px; }
-    .card { background: #111; padding: 20px; margin: 15px 0; border-radius: 12px; }
-    button { background: #d4af37; color: #000; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; }
-    button:disabled { background: gray; cursor: not-allowed; }
-    #total { font-size: 20px; margin: 10px 0; }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #000;
+      color: #d4af37;
+      text-align: center;
+      padding: 20px;
+    }
+    .card {
+      background: #111;
+      padding: 20px;
+      margin: 15px 0;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(212,175,55,0.5);
+    }
+    button {
+      background: #d4af37;
+      color: #000;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    button:disabled {
+      background: gray;
+      cursor: not-allowed;
+    }
   </style>
 </head>
 <body>
-  <h1>💈 Tiicoo Barbeiro</h1>
+  <h1>💈 Tiicoo Barbeiro 💈</h1>
   <p>Escolha seus serviços:</p>
-
   <div class="card">
     <label><input type="checkbox" value="20"> Corte simples - R$20</label><br>
     <label><input type="checkbox" value="30"> Corte desfaçado - R$30</label><br>
@@ -30,50 +51,51 @@
     <label><input type="checkbox" value="80"> Tinta demais cores - R$80</label><br>
     <label><input type="checkbox" value="8"> Barba simples - R$8</label><br>
     <label><input type="checkbox" value="10"> Barba modelada - R$10</label><br>
-    <label><input type="checkbox" value="15"> Pigmentação na barba - R$15</label><br>
+    <label><input type="checkbox" value="15"> Pigmentação barba - R$15</label><br>
   </div>
 
-  <p id="total">Total: R$0</p>
+  <h2>Total: R$ <span id="total">0</span></h2>
 
-  <div class="card">
-    <p><b>Pagamento via Pix:</b></p>
-    <p>Chave Copia e Cola:</p>
-    <textarea id="pix" rows="2" cols="40" readonly>00020126330014BR.GOV.BCB.PIX011844a98070-dd9d-4bca-8371-a93401fee7025204000053039865406100.005802BR5924Clayton Firmino Barboza6009Sao Paulo62070503***6304ABCD</textarea>
-    <br><button onclick="copiarPix()">Copiar Pix</button>
-    <p><b>Nome:</b> Clayton Firmino Barboza</p>
-    <canvas id="qrcode"></canvas>
+  <div id="pix" style="display:none;" class="card">
+    <p><b>Copie a chave Pix:</b></p>
+    <p id="pixKey">44a98070-dd9d-4bca-8371-a93401fee702</p>
+    <p><b>Nome:</b> Clayton Firmino Barboza<br><b>Banco:</b> Santander</p>
+    <button onclick="copyPix()">Copiar chave Pix</button>
   </div>
 
-  <button id="agendar" disabled>Agendar horário</button>
+  <button id="confirmBtn" disabled>Confirmar Agendamento</button>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
   <script>
-    const checkboxes = document.querySelectorAll("input[type=checkbox]");
-    const totalEl = document.getElementById("total");
-    const agendarBtn = document.getElementById("agendar");
-    const pixCode = document.getElementById("pix").value;
+    const checkboxes = document.querySelectorAll('input[type=checkbox]');
+    const totalSpan = document.getElementById('total');
+    const pixDiv = document.getElementById('pix');
+    const confirmBtn = document.getElementById('confirmBtn');
+    let total = 0;
+    let pixCopied = false;
 
-    checkboxes.forEach(cb => cb.addEventListener("change", atualizarTotal));
+    checkboxes.forEach(cb => {
+      cb.addEventListener('change', () => {
+        total = Array.from(checkboxes)
+                     .filter(c => c.checked)
+                     .map(c => parseFloat(c.value))
+                     .reduce((a, b) => a + b, 0);
+        totalSpan.textContent = total;
+        if (total > 0) {
+          pixDiv.style.display = 'block';
+        } else {
+          pixDiv.style.display = 'none';
+        }
+      });
+    });
 
-    function atualizarTotal() {
-      let total = 0;
-      checkboxes.forEach(cb => { if (cb.checked) total += parseFloat(cb.value); });
-      totalEl.innerText = "Total: R$" + total.toFixed(2);
-      agendarBtn.disabled = total === 0;
-    }
-
-    function copiarPix() {
-      navigator.clipboard.writeText(pixCode).then(() => {
-        alert("Pix copiado!");
+    function copyPix() {
+      const pixKey = document.getElementById('pixKey').textContent;
+      navigator.clipboard.writeText(pixKey).then(() => {
+        alert("Chave Pix copiada!");
+        pixCopied = true;
+        confirmBtn.disabled = false;
       });
     }
-
-    // Gerar QR Code Pix
-    new QRious({
-      element: document.getElementById("qrcode"),
-      value: pixCode,
-      size: 200
-    });
   </script>
 </body>
 </html>

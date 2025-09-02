@@ -1,13 +1,10 @@
 {
   "name": "Tiicoo Barbeiro",
-  "short_name": "Barbearia",
+  "short_name": "Barbeiro",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#d4af37",
-  "icons": [{
-    "src": "icon.png",
-    "sizes": "192x192",
-    "type": "image/png"
-  }]
+  "description": "App de agendamento e pagamento Tiicoo Barbeiro",
+  "icons": []
 }
